@@ -1,61 +1,74 @@
-<div class="auth-container">
-  <mat-card class="auth-card">
-    <mat-card-header>
-      <mat-card-title>Registrati</mat-card-title>
-      <mat-card-subtitle>Crea il tuo account</mat-card-subtitle>
-    </mat-card-header>
+<div class="auth">
+  <div class="auth-hero">
+    <div class="ah-brand">
+      <div class="sb-logo"><span class="material-symbols-outlined">savings</span></div>
+      <b>FinTrack</b>
+    </div>
+    <div class="ah-mid">
+      <h2>Inizia a risparmiare con metodo.</h2>
+      <p>Crea il tuo account gratuito e ottieni subito una panoramica completa del tuo budget mensile.</p>
+      <div class="ah-stats">
+        <div class="s"><b>2 min</b><span>Per iniziare</span></div>
+        <div class="s"><b>Gratis</b><span>Nessuna carta</span></div>
+      </div>
+    </div>
+    <div class="ah-foot">© 2026 FinTrack · Personal Finance Dashboard</div>
+  </div>
 
-    <mat-card-content>
+  <div class="auth-panel">
+    <div class="auth-card">
+      <h1>Crea il tuo account</h1>
+      <p class="lead">Bastano pochi secondi per iniziare.</p>
+
       <form [formGroup]="form" (ngSubmit)="onSubmit()">
 
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Nome</mat-label>
-          <input matInput type="text" formControlName="name" placeholder="Mario Rossi" />
-          @if (form.get('name')?.hasError('required') && form.get('name')?.touched) {
-            <mat-error>Nome obbligatorio</mat-error>
+        <div class="ff">
+          <div class="ff-field">
+            <span class="material-symbols-outlined">person</span>
+            <input type="text" formControlName="name" placeholder="Mario Rossi" />
+          </div>
+          <div class="ff-label">Nome completo</div>
+          @if (form.get('name')?.invalid && form.get('name')?.touched) {
+            <div class="ff-error">Nome obbligatorio</div>
           }
-        </mat-form-field>
+        </div>
 
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Email</mat-label>
-          <input matInput type="email" formControlName="email" placeholder="mario@esempio.com" />
-          @if (form.get('email')?.hasError('required') && form.get('email')?.touched) {
-            <mat-error>Email obbligatoria</mat-error>
+        <div class="ff">
+          <div class="ff-field">
+            <span class="material-symbols-outlined">mail</span>
+            <input type="email" formControlName="email" placeholder="nome@email.it" />
+          </div>
+          <div class="ff-label">Email</div>
+          @if (form.get('email')?.invalid && form.get('email')?.touched) {
+            <div class="ff-error">Email non valida</div>
           }
-          @if (form.get('email')?.hasError('email') && form.get('email')?.touched) {
-            <mat-error>Email non valida</mat-error>
-          }
-        </mat-form-field>
+        </div>
 
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Password</mat-label>
-          <input matInput type="password" formControlName="password" />
-          @if (form.get('password')?.hasError('required') && form.get('password')?.touched) {
-            <mat-error>Password obbligatoria</mat-error>
+        <div class="ff">
+          <div class="ff-field">
+            <span class="material-symbols-outlined">lock</span>
+            <input [type]="showPassword ? 'text' : 'password'" formControlName="password" placeholder="Almeno 6 caratteri" />
+            <span class="material-symbols-outlined" style="margin-left:auto;cursor:pointer" (click)="togglePassword()">
+              {{ showPassword ? 'visibility' : 'visibility_off' }}
+            </span>
+          </div>
+          <div class="ff-label">Password</div>
+          @if (form.get('password')?.invalid && form.get('password')?.touched) {
+            <div class="ff-error">Minimo 6 caratteri</div>
           }
-          @if (form.get('password')?.hasError('minlength') && form.get('password')?.touched) {
-            <mat-error>Minimo 6 caratteri</mat-error>
-          }
-        </mat-form-field>
+        </div>
 
         @if (errorMessage) {
-          <p class="error-message">{{ errorMessage }}</p>
+          <div class="ff-error" style="margin-bottom: 1rem;">{{ errorMessage }}</div>
         }
 
-        <button
-          mat-raised-button
-          color="primary"
-          type="submit"
-          class="full-width"
-          [disabled]="isLoading">
-          {{ isLoading ? 'Registrazione in corso...' : 'Registrati' }}
+        <button class="btn btn-filled btn-block btn-lg" type="submit" [disabled]="isLoading">
+          {{ isLoading ? 'Registrazione in corso...' : 'Crea account' }}
         </button>
 
       </form>
-    </mat-card-content>
 
-    <mat-card-actions>
-      <p>Hai già un account? <a routerLink="/auth/login">Accedi</a></p>
-    </mat-card-actions>
-  </mat-card>
+      <div class="auth-alt">Hai già un account? <a class="link" routerLink="/auth/login">Accedi</a></div>
+    </div>
+  </div>
 </div>

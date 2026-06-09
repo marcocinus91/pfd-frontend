@@ -1,51 +1,64 @@
-<div class="auth-container">
-    <mat-card class="auth-card">
-        <mat-card-header>
-            <mat-card-title>Accedi</mat-card-title>
-            <mat-card-subtitle>Bentornato nella tua dashboard</mat-card-subtitle>
-        </mat-card-header>
+<div class="auth">
+  <div class="auth-hero">
+    <div class="ah-brand">
+      <div class="sb-logo"><span class="material-symbols-outlined">savings</span></div>
+      <b>FinTrack</b>
+    </div>
+    <div class="ah-mid">
+      <h2>Le tue finanze, finalmente sotto controllo.</h2>
+      <p>Monitora entrate e uscite, analizza le spese per categoria e tieni d'occhio il saldo — tutto in un'unica dashboard.</p>
+      <div class="ah-stats">
+        <div class="s"><b>€ 12.450</b><span>Saldo medio utenti</span></div>
+        <div class="s"><b>7</b><span>Categorie tracciate</span></div>
+        <div class="s"><b>100%</b><span>Dati privati</span></div>
+      </div>
+    </div>
+    <div class="ah-foot">© 2026 FinTrack · Personal Finance Dashboard</div>
+  </div>
 
-        <mat-card-content>
-            <form [formGroup]="form" (ngSubmit)="onSubmit()">
+  <div class="auth-panel">
+    <div class="auth-card">
+      <h1>Bentornato</h1>
+      <p class="lead">Accedi al tuo account per continuare.</p>
 
-                <mat-form-field appearance="outline" class="full-width">
-                    <mat-label>Email</mat-label>
-                    <input matInput type="email" formControlName="email" placeholder="mario@esempio.com" />
-                    @if (form.get('email')?.hasError('required') && form.get('email')?.touched) {
-                    <mat-error>Email obbligatoria</mat-error>
-                    }
-                    @if (form.get('email')?.hasError('email') && form.get('email')?.touched) {
-                    <mat-error>Email non valida</mat-error>
-                    }
-                </mat-form-field>
+      <form [formGroup]="form" (ngSubmit)="onSubmit()">
 
-                <mat-form-field appearance="outline" class="full-width">
-                    <mat-label>Password</mat-label>
-                    <input matInput type="password" formControlName="password" />
-                    @if (form.get('password')?.hasError('required') && form.get('password')?.touched) {
-                        <mat-error>Password obbligatoria</mat-error>
-                    }
-                    @if (form.get('password')?.hasError('minLength') && form.get('password')?.touched) {
-                        <mat-error>Minimo 6 caratteri</mat-error>
-                    }
-                </mat-form-field>
+        <div class="ff" [class.focused]="form.get('email')?.touched">
+          <div class="ff-field">
+            <span class="material-symbols-outlined">mail</span>
+            <input type="email" formControlName="email" placeholder="mario@esempio.com" />
+          </div>
+          <div class="ff-label">Email</div>
+          @if (form.get('email')?.invalid && form.get('email')?.touched) {
+            <div class="ff-error">Email non valida</div>
+          }
+        </div>
 
-                @if (errorMessage) {
-                    <p class="error-message">{{ errorMessage }}</p>
-                }
+        <div class="ff">
+          <div class="ff-field">
+            <span class="material-symbols-outlined">lock</span>
+            <input [type]="showPassword ? 'text' : 'password'" formControlName="password" placeholder="••••••••" />
+            <span class="material-symbols-outlined" style="margin-left:auto;cursor:pointer" (click)="togglePassword()">
+              {{ showPassword ? 'visibility' : 'visibility_off' }}
+            </span>
+          </div>
+          <div class="ff-label">Password</div>
+          @if (form.get('password')?.invalid && form.get('password')?.touched) {
+            <div class="ff-error">Minimo 6 caratteri</div>
+          }
+        </div>
 
-                <button
-                    mat-raised-button
-                    color="primary"
-                    type="submit"
-                    class="full-width"
-                    [disabled]="isLoading"
-                >{{ isLoading ? 'Accesso in corso...' : 'Accedi'}}</button>
-            </form>
-        </mat-card-content>
+        @if (errorMessage) {
+          <div class="ff-error" style="margin-bottom: 1rem;">{{ errorMessage }}</div>
+        }
 
-        <mat-card-actions>
-            <p>Non hai un account? <a routerLink="/auth/register">Registrati</a></p>
-        </mat-card-actions>
-    </mat-card>
+        <button class="btn btn-filled btn-block btn-lg" type="submit" [disabled]="isLoading">
+          {{ isLoading ? 'Accesso in corso...' : 'Accedi' }}
+        </button>
+
+      </form>
+
+      <div class="auth-alt">Non hai un account? <a class="link" routerLink="/auth/register">Registrati</a></div>
+    </div>
+  </div>
 </div>
