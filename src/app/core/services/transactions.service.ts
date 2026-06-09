@@ -14,10 +14,10 @@ export interface Transaction {
 
 export interface Summary {
     totalIncome: number;
-    totalExpense: number;
+    totalExpenses: number;
     balance: number;
     byCategory: Record<string, number>;
-    byMonth: Record<string, { income: number; expense: number }>;
+    byMonth: Record<string, { income: number; expenses: number }>;
 }
 
 export interface CreateTransactionDto {
