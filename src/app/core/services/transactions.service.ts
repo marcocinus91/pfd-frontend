@@ -1,6 +1,7 @@
 import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { Observable } from "rxjs";
+import { environment } from "../../../environments/environment";
 
 export interface Transaction {
     id: string;
@@ -32,7 +33,7 @@ export interface CreateTransactionDto {
     providedIn: 'root',
 })
 export class TransactionsService {
-    private readonly API_URL = 'http://localhost:3000/transactions';
+    private readonly API_URL = environment.apiBaseUrl + '/transactions';
 
     constructor(private http: HttpClient) {}
 

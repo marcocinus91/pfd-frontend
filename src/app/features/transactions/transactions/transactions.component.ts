@@ -67,8 +67,8 @@ export class TransactionsComponent {
     return this.store.entities().filter(t => {
       if (this.filterCategory() && t.category !== this.filterCategory()) return false;
       if (this.filterType() && t.type !== this.filterType()) return false;
-      if (this.filterMonth() && t.date.startsWith(this.filterMonth())) return false;
-      if (this.searchText() && t.description.toLowerCase().includes(this.searchText().toLowerCase())) return false;
+      if (this.filterMonth() && !t.date.startsWith(this.filterMonth())) return false;
+      if (this.searchText() && !t.description.toLowerCase().includes(this.searchText().toLowerCase())) return false;
       return true;
     }).sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
   });
@@ -97,7 +97,6 @@ export class TransactionsComponent {
   }
 
   openAddModal() {
-    console.log('openAddModel chiamato')
     this.editingTransaction.set(null);
     this.form.set({
       amount: '',
@@ -107,7 +106,6 @@ export class TransactionsComponent {
       date: new Date().toISOString().split('T')[0],
     });
     this.showModal.set(true);
-    console.log('showModal dopo set:', this.showModal())
   }
 
   openEditModal(tx: Transaction) {
