@@ -6,151 +6,149 @@
   </div>
 
   @if (store.isLoading()) {
-    <div class="cards-grid">
-      @for (i of [1,2,3,4]; track i) {
-        <div class="card kpi-card">
-          <div class="skel skel-line" style="width: 60%; margin-bottom: 12px;"></div>
-          <div class="skel skel-line" style="width: 40%; height: 28px;"></div>
-        </div>
-      }
+  <div class="cards-grid">
+    @for (i of [1,2,3,4]; track i) {
+    <div class="card kpi-card">
+      <div class="skel skel-line" style="width: 60%; margin-bottom: 12px;"></div>
+      <div class="skel skel-line" style="width: 40%; height: 28px;"></div>
     </div>
+    }
+  </div>
   } @else if (store.error()) {
-    <div class="card">
-      <div class="state-block">
-        <div class="state-ic error">
-          <span class="material-symbols-outlined">error</span>
-        </div>
-        <h3>Errore nel caricamento</h3>
-        <p>Non è stato possibile recuperare i dati.</p>
-        <button class="btn btn-filled" (click)="store.loadSummary()">
-          <span class="material-symbols-outlined">refresh</span> Riprova
-        </button>
+  <div class="card">
+    <div class="state-block">
+      <div class="state-ic error">
+        <span class="material-symbols-outlined">error</span>
       </div>
+      <h3>Errore nel caricamento</h3>
+      <p>Non è stato possibile recuperare i dati.</p>
+      <button class="btn btn-filled" (click)="store.loadSummary()">
+        <span class="material-symbols-outlined">refresh</span> Riprova
+      </button>
     </div>
+  </div>
   } @else if (!store.summary()) {
-    <div class="card">
-      <div class="state-block">
-        <div class="state-ic empty">
-          <span class="material-symbols-outlined">bar_chart</span>
-        </div>
-        <h3>Nessun dato disponibile</h3>
-        <p>Aggiungi delle transazioni per vedere le statistiche.</p>
+  <div class="card">
+    <div class="state-block">
+      <div class="state-ic empty">
+        <span class="material-symbols-outlined">bar_chart</span>
       </div>
+      <h3>Nessun dato disponibile</h3>
+      <p>Aggiungi delle transazioni per vedere le statistiche.</p>
     </div>
+  </div>
   } @else {
 
-    <!-- KPI cards -->
-    <div class="cards-grid">
-      <div class="card kpi-card">
-        <div class="kpi-label">
-          <span class="material-symbols-outlined">account_balance_wallet</span>
-          Saldo totale
-        </div>
-        <div class="kpi-value" [ngClass]="(store.summary()?.balance ?? 0) >= 0 ? 'income' : 'expense'">
-          {{ store.summary()?.balance | currency:'EUR':'symbol':'1.2-2':'it' }}
-        </div>
+  <!-- KPI cards -->
+  <div class="cards-grid">
+    <div class="card kpi-card">
+      <div class="kpi-label">
+        <span class="material-symbols-outlined">account_balance_wallet</span>
+        Saldo totale
       </div>
-
-      <div class="card kpi-card">
-        <div class="kpi-label">
-          <span class="material-symbols-outlined">south_west</span>
-          Entrate totali
-        </div>
-        <div class="kpi-value income">
-          {{ store.summary()?.totalIncome | currency:'EUR':'symbol':'1.2-2':'it' }}
-        </div>
-      </div>
-
-      <div class="card kpi-card">
-        <div class="kpi-label">
-          <span class="material-symbols-outlined">north_east</span>
-          Spese totali
-        </div>
-        <div class="kpi-value expense">
-          {{ store.summary()?.totalExpenses | currency:'EUR':'symbol':'1.2-2':'it' }}
-        </div>
-      </div>
-
-      <div class="card kpi-card">
-        <div class="kpi-label">
-          <span class="material-symbols-outlined">receipt_long</span>
-          Transazioni
-        </div>
-        <div class="kpi-value">
-          {{ store.totalCount() }}
-        </div>
+      <div class="kpi-value" [ngClass]="(store.summary()?.balance ?? 0) >= 0 ? 'income' : 'expense'">
+        {{ store.summary()?.balance | currency:'EUR':'symbol':'1.2-2':'it' }}
       </div>
     </div>
 
-    <!-- Charts row -->
-    <div class="charts-grid">
-
-      <!-- Bar chart mensile -->
-      <div class="card chart-card">
-        <div class="chart-head">
-          <div>
-            <div class="chart-title">Andamento mensile</div>
-            <div class="chart-sub">Entrate vs uscite</div>
-          </div>
-          <div class="chart-legend">
-            <span class="leg-dot" style="background: var(--income-bar)"></span> Entrate
-            <span class="leg-dot" style="background: var(--expense-bar); margin-left: 12px;"></span> Uscite
-          </div>
-        </div>
-        <div class="bar-chart">
-          @for (entry of getByMonthEntries(); track entry[0]) {
-            <div class="bar-group">
-              <div class="bar-pair">
-                <div class="bar income-bar"
-                  [style.height.%]="(entry[1].income / getMaxMonthValue()) * 100">
-                </div>
-                <div class="bar expense-bar"
-                  [style.height.%]="(entry[1].expenses / getMaxMonthValue()) * 100">
-                </div>
-              </div>
-              <div class="bar-label">{{ getMonthLabel(entry[0]) }}</div>
-            </div>
-          }
-        </div>
+    <div class="card kpi-card">
+      <div class="kpi-label">
+        <span class="material-symbols-outlined">south_west</span>
+        Entrate totali
       </div>
-
-      <!-- Donut chart categorie -->
-      <div class="card chart-card">
-        <div class="chart-head">
-          <div>
-            <div class="chart-title">Spese per categoria</div>
-            <div class="chart-sub">Distribuzione uscite</div>
-          </div>
-        </div>
-        <div class="donut-list">
-          @for (entry of getByCategoryEntries(); track entry[0]) {
-            <div class="donut-row">
-              <span class="ic" [style.background]="getCategoryColor(entry[0])">
-                <span class="material-symbols-outlined">{{ categoryIcons[entry[0]] }}</span>
-              </span>
-              <span class="donut-label">{{ categoryLabels[entry[0]] }}</span>
-              <div class="donut-bar-wrap">
-                <div class="donut-bar"
-                  [style.width.%]="(entry[1] / (store.summary()?.totalExpenses || 1)) * 100"
-                  [style.background]="getCategoryColor(entry[0])">
-                </div>
-              </div>
-              <span class="donut-amt">{{ entry[1] | currency:'EUR':'symbol':'1.2-2':'it' }}</span>
-            </div>
-          }
-        </div>
+      <div class="kpi-value income">
+        {{ store.summary()?.totalIncome | currency:'EUR':'symbol':'1.2-2':'it' }}
       </div>
-
     </div>
 
-    <!-- Ultime transazioni -->
-    <div class="card">
+    <div class="card kpi-card">
+      <div class="kpi-label">
+        <span class="material-symbols-outlined">north_east</span>
+        Spese totali
+      </div>
+      <div class="kpi-value expense">
+        {{ store.summary()?.totalExpenses | currency:'EUR':'symbol':'1.2-2':'it' }}
+      </div>
+    </div>
+
+    <div class="card kpi-card">
+      <div class="kpi-label">
+        <span class="material-symbols-outlined">receipt_long</span>
+        Transazioni
+      </div>
+      <div class="kpi-value">
+        {{ store.totalCount() }}
+      </div>
+    </div>
+  </div>
+
+  <!-- Charts row -->
+  <div class="charts-grid">
+
+    <!-- Bar chart mensile -->
+    <div class="card chart-card">
       <div class="chart-head">
         <div>
-          <div class="chart-title">Ultime transazioni</div>
-          <div class="chart-sub">Le 5 più recenti</div>
+          <div class="chart-title">Andamento mensile</div>
+          <div class="chart-sub">Entrate vs uscite</div>
+        </div>
+        <div class="chart-legend">
+          <span class="leg-dot" style="background: var(--income-bar)"></span> Entrate
+          <span class="leg-dot" style="background: var(--expense-bar); margin-left: 12px;"></span> Uscite
         </div>
       </div>
+      <div class="bar-chart">
+        @for (entry of getByMonthEntries(); track entry[0]) {
+        <div class="bar-group">
+          <div class="bar-pair">
+            <div class="bar income-bar" [style.height.%]="(entry[1].income / getMaxMonthValue()) * 100">
+            </div>
+            <div class="bar expense-bar" [style.height.%]="(entry[1].expenses / getMaxMonthValue()) * 100">
+            </div>
+          </div>
+          <div class="bar-label">{{ getMonthLabel(entry[0]) }}</div>
+        </div>
+        }
+      </div>
+    </div>
+
+    <!-- Donut chart categorie -->
+    <div class="card chart-card">
+      <div class="chart-head">
+        <div>
+          <div class="chart-title">Spese per categoria</div>
+          <div class="chart-sub">Distribuzione uscite</div>
+        </div>
+      </div>
+      <div class="donut-list">
+        @for (entry of getByCategoryEntries(); track entry[0]) {
+        <div class="donut-row">
+          <span class="ic" [style.background]="getCategoryColor(entry[0])">
+            <span class="material-symbols-outlined">{{ categoryIcons[entry[0]] }}</span>
+          </span>
+          <span class="donut-label">{{ categoryLabels[entry[0]] }}</span>
+          <div class="donut-bar-wrap">
+            <div class="donut-bar" [style.width.%]="(entry[1] / (store.summary()?.totalExpenses || 1)) * 100"
+              [style.background]="getCategoryColor(entry[0])">
+            </div>
+          </div>
+          <span class="donut-amt">{{ entry[1] | currency:'EUR':'symbol':'1.2-2':'it' }}</span>
+        </div>
+        }
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Ultime transazioni -->
+  <div class="card">
+    <div class="chart-head">
+      <div>
+        <div class="chart-title">Ultime transazioni</div>
+        <div class="chart-sub">Le 5 più recenti</div>
+      </div>
+    </div>
+    <div class="dash-table-wrap">
       <table class="mtable">
         <thead>
           <tr>
@@ -163,30 +161,31 @@
         </thead>
         <tbody>
           @for (tx of getRecentTransactions(); track tx.id) {
-            <tr>
-              <td class="td-date">{{ tx.date | date:'dd/MM/yyyy' }}</td>
-              <td class="td-desc">{{ tx.description }}</td>
-              <td>
-                <span class="tbl-cat">
-                  <span class="ic" [style.background]="getCategoryColor(tx.category)">
-                    <span class="material-symbols-outlined">{{ categoryIcons[tx.category] }}</span>
-                  </span>
-                  {{ categoryLabels[tx.category] }}
+          <tr>
+            <td class="td-date">{{ tx.date | date:'dd/MM/yyyy' }}</td>
+            <td class="td-desc">{{ tx.description }}</td>
+            <td>
+              <span class="tbl-cat">
+                <span class="ic" [style.background]="getCategoryColor(tx.category)">
+                  <span class="material-symbols-outlined">{{ categoryIcons[tx.category] }}</span>
                 </span>
-              </td>
-              <td>
-                <span class="chip" [ngClass]="tx.type === 'income' ? 'chip-income' : 'chip-expense'">
-                  {{ tx.type === 'income' ? 'Entrata' : 'Uscita' }}
-                </span>
-              </td>
-              <td class="td-amt" [ngClass]="tx.type">
-                {{ tx.type === 'income' ? '+ ' : '− ' }}{{ tx.amount | currency:'EUR':'symbol':'1.2-2':'it' }}
-              </td>
-            </tr>
+                {{ categoryLabels[tx.category] }}
+              </span>
+            </td>
+            <td>
+              <span class="chip" [ngClass]="tx.type === 'income' ? 'chip-income' : 'chip-expense'">
+                {{ tx.type === 'income' ? 'Entrata' : 'Uscita' }}
+              </span>
+            </td>
+            <td class="td-amt" [ngClass]="tx.type">
+              {{ tx.type === 'income' ? '+ ' : '− ' }}{{ tx.amount | currency:'EUR':'symbol':'1.2-2':'it' }}
+            </td>
+          </tr>
           }
         </tbody>
       </table>
     </div>
+  </div>
 
   }
 </div>

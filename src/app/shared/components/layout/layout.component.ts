@@ -19,10 +19,25 @@ export class LayoutComponent {
     private router: Router,
   ) {}
 
+  isMobileProfileOpen = false;
+
   logout() {
     this.authService.logout();
   }
 
+  toggleMobileProfile() {
+    this.isMobileProfileOpen = !this.isMobileProfileOpen;
+  }
+
+  closeMobileProfile() {
+    this.isMobileProfileOpen = false;
+  }
+
+  logoutFromMobileProfile() {
+    this.isMobileProfileOpen = false;
+    this.logout();
+  }
+ 
   getUserInitials(): string {
     const user = this.authService.currentUser();
     if (!user?.name) return 'U';
