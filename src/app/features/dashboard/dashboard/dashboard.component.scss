@@ -9,6 +9,7 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
+  padding: 1.25rem;
 }
 
 .kpi-label {
@@ -18,9 +19,7 @@
   font-size: 13px;
   color: var(--text-3);
 
-  .material-symbols-outlined {
-    font-size: 18px;
-  }
+  .material-symbols-outlined { font-size: 18px; }
 }
 
 .kpi-value {
@@ -41,6 +40,11 @@
 
 .chart-card {
   min-height: 260px;
+  padding: 1.25rem;
+}
+
+.card {
+  padding: 1.25rem;
 }
 
 .chart-head {
@@ -83,7 +87,6 @@
   gap: 16px;
   height: 160px;
   padding-bottom: 28px;
-  position: relative;
 }
 
 .bar-group {
@@ -161,4 +164,19 @@
   width: 80px;
   text-align: right;
   flex-shrink: 0;
+}
+
+.donut-row .ic {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  .material-symbols-outlined {
+    font-size: 17px;
+    color: white;
+  }
 }
