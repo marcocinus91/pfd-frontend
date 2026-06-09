@@ -1,0 +1,42 @@
+<div class="app">
+  <aside class="sidebar">
+    <div class="sb-brand">
+      <div class="sb-logo">
+        <span class="material-symbols-outlined">savings</span>
+      </div>
+      <div class="sb-title">
+        <b>FinTrack</b>
+        <span>Finanza personale</span>
+      </div>
+    </div>
+
+    <nav class="sb-nav">
+      <div class="sb-cap">Generale</div>
+      <a class="nav-item" routerLink="/dashboard" routerLinkActive="active">
+        <span class="material-symbols-outlined">dashboard</span> Dashboard
+      </a>
+      <a class="nav-item" routerLink="/transactions" routerLinkActive="active">
+        <span class="material-symbols-outlined">receipt_long</span> Transazioni
+      </a>
+    </nav>
+
+    <div class="sb-spacer"></div>
+
+    <div class="sb-user">
+      <div class="sb-avatar">
+        {{ getUserInitials() }}
+      </div>
+      <div class="meta">
+        <b>{{ authService.currentUser()?.name || 'Utente' }}</b>
+        <span>{{ authService.currentUser()?.email }}</span>
+      </div>
+      <button class="icon-btn" title="Logout" (click)="logout()">
+        <span class="material-symbols-outlined">logout</span>
+      </button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <router-outlet />
+  </main>
+</div>
