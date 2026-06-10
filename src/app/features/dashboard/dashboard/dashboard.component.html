@@ -39,7 +39,53 @@
   </div>
   } @else {
 
-  <!-- KPI cards -->
+    <!-- Balance hero (mobile) -->
+  @if (isMobile()) {
+  <div class="balance-hero">
+    <div class="hero-label">
+      <span class="material-symbols-outlined">account_balance_wallet</span>
+      Saldo totale
+    </div>
+    <div class="hero-value">
+      {{ store.summary()?.balance | currency:'EUR':'symbol':'1.2-2':'it' }}
+    </div>
+    <div class="hero-split">
+      <div class="hero-split-item">
+        <span class="material-symbols-outlined">south_west</span>
+        <span class="hsi-label">Entrate</span>
+        <span class="hsi-value hsi-income">
+          {{ store.summary()?.totalIncome | currency:'EUR':'symbol':'1.2-2':'it' }}
+        </span>
+      </div>
+      <div class="hero-split-item">
+        <span class="material-symbols-outlined">north_east</span>
+        <span class="hsi-label">Uscite</span>
+        <span class="hsi-value hsi-expense">
+          {{ store.summary()?.totalExpenses | currency:'EUR':'symbol':'1.2-2':'it' }}
+        </span>
+      </div>
+    </div>
+  </div>
+  }
+
+  <!-- Mini-row transazioni (mobile)-->
+     <!-- Mini-row transazioni (mobile) -->
+  @if (isMobile()) {
+  <div class="mini-row">
+    <span class="mini-row-icon">
+      <span class="material-symbols-outlined">receipt_long</span>
+    </span>
+    <div class="mini-row-text">
+      <b>Transazioni</b>
+      <span>questo mese · {{ currentMonthIncomeCount() }} in entrata</span>
+    </div>
+    <span class="mini-row-count">{{ currentMonthTransactions().length }}</span>
+  </div>
+  }
+
+
+  <!-- KPI cards (desktop) -->
+  @if (!isMobile()) {
   <div class="cards-grid">
     <div class="card kpi-card">
       <div class="kpi-label">
@@ -81,6 +127,7 @@
       </div>
     </div>
   </div>
+  }
 
   <!-- Charts row -->
   <div class="charts-grid">

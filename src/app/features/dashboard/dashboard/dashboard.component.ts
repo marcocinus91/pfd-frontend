@@ -1,8 +1,19 @@
 import { Component, OnInit, computed, inject } from '@angular/core';
 import { CurrencyPipe, DatePipe, NgClass } from '@angular/common';
 import { TransactionsStore } from '../../../store/transactions.store';
-import { CATEGORY_ICONS, CATEGORY_LABELS, CATEGORY_COLORS_HEX, getCategoryColor } from '../../../shared/constants/categories';
-import { BarChartModule, PieChartModule, Color, ScaleType } from '@swimlane/ngx-charts';
+import {
+  CATEGORY_ICONS,
+  CATEGORY_LABELS,
+  CATEGORY_COLORS_HEX,
+  getCategoryColor,
+} from '../../../shared/constants/categories';
+import {
+  BarChartModule,
+  PieChartModule,
+  Color,
+  ScaleType,
+} from '@swimlane/ngx-charts';
+import { ResponsiveService } from '../../../core/services/responsive.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -16,18 +27,23 @@ export class DashboardComponent implements OnInit {
 
   categoryLabels = CATEGORY_LABELS;
   categoryIcons = CATEGORY_ICONS;
+  responsive = inject(ResponsiveService);
+  isMobile = this.responsive.isMobile;
 
   ngOnInit() {
     this.store.loadAll();
     this.store.loadSummary();
   }
 
-  getCategoryColor = getCategoryColor
+  getCategoryColor = getCategoryColor;
 
   getMonthLabel(key: string): string {
     const [year, month] = key.split('-');
     const date = new Date(parseInt(year), parseInt(month) - 1);
-    return date.toLocaleDateString('it-IT', { month: 'short', year: 'numeric' });
+    return date.toLocaleDateString('it-IT', {
+      month: 'short',
+      year: 'numeric',
+    });
   }
 
   getByMonthEntries() {
@@ -70,10 +86,10 @@ export class DashboardComponent implements OnInit {
       name: this.getMonthLabel(key),
       series: [
         { name: 'Entrate', value: value.income },
-        { name: 'Uscite', value: value.expenses},
-      ]
-    }))
-  })
+        { name: 'Uscite', value: value.expenses },
+      ],
+    }));
+  });
 
   categoryChartData = computed(() => {
     return this.getByCategoryEntries().map(([key, value]) => ({
@@ -85,7 +101,22 @@ export class DashboardComponent implements OnInit {
   categoryColors = computed(() => {
     return this.getByCategoryEntries().map(([key]) => ({
       name: this.categoryLabels[key],
-      value: CATEGORY_COLORS_HEX[key] ?? CATEGORY_COLORS_HEX['other']
-    }))
-  })
+      value: CATEGORY_COLORS_HEX[key] ?? CATEGORY_COLORS_HEX['other'],
+    }));
+  });
+
+  currentMonthTransactions = computed(() => {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = now.getMonth();
+    return this.store.entities().filter((tx) => {
+      const d = new Date(tx.date);
+      return d.getFullYear() === year && d.getMonth() === month;
+    });
+  });
+
+  currentMonthIncomeCount = computed(() => {
+    return this.currentMonthTransactions().filter((tx) => tx.type === 'income')
+      .length;
+  });
 }
