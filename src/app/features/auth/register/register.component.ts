@@ -22,9 +22,9 @@ export class RegisterComponent {
     private router: Router,
   ) {
     this.form = this.fb.group({
-      name: ['', Validators.required],
+      name: ['', Validators.required, Validators.maxLength(100)],
       email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(6)]],
+      password: ['', [Validators.required, Validators.minLength(12), Validators.maxLength(128)]],
     });
   }
 
@@ -41,7 +41,11 @@ export class RegisterComponent {
       next: () => this.router.navigate(['/dashboard']),
       error: (err) => {
         this.isLoading = false;
-        this.errorMessage = err.error?.message || 'Errore durante la registrazione';
+        if (err.status === 429) {
+          this.errorMessage = 'Troppi tentativi, riprova tra qualche minuto'
+        } else {
+          this.errorMessage = err.error?.messare || 'Errore durante la registrazione'
+        }
       },
     });
   }

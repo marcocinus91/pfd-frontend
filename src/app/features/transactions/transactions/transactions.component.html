@@ -188,6 +188,7 @@
             <span class="material-symbols-outlined">euro</span>
             <input type="number" [value]="form().amount"
               (input)="updateForm('amount', $any($event.target).value)"
+              min="0.01" max="9999999.99" step="0.01"
               placeholder="0,00" />
           </div>
           <div class="ff-label">Importo</div>
@@ -223,10 +224,14 @@
             <span class="material-symbols-outlined">notes</span>
             <input type="text" [value]="form().description"
               (input)="updateForm('description', $any($event.target).value)"
+              maxlength="500"
               placeholder="Descrizione del movimento" />
           </div>
           <div class="ff-label">Descrizione</div>
         </div>
+        @if (formError()) {
+            <div class="ff-error" style="margin-top:4px">{{ formError() }}</div>
+          }
       </div>
 
       <div class="dialog-foot">

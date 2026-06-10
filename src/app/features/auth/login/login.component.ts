@@ -40,7 +40,11 @@ export class LoginComponent {
       next: () => this.router.navigate(['/dashboard']),
       error: (err) => {
         this.isLoading = false;
-        this.errorMessage = err.error?.message || 'Credenziali non valide';
+        if (err.status === 429) {
+          this.errorMessage = 'Troppi tentativi, riprova tra qualche minuto';
+        } else {
+          this.errorMessage = err.error?.message || 'Credenziali non valide'
+        }
       },
     });
   }

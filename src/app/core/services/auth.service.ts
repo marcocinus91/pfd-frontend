@@ -1,8 +1,9 @@
 import { Injectable, signal } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { Router } from '@angular/router';
-import { tap } from "rxjs/operators";
+import { catchError, tap } from "rxjs/operators";
 import { environment } from "../../../environments/environment";
+import { throwError, of } from "rxjs";
 
 export interface User {
     id: string;
@@ -12,7 +13,8 @@ export interface User {
 
 export interface AuthResponse {
     user: User;
-    token: string;
+    accessToken: string;
+    refreshToken: string;
 }
 
 @Injectable({
@@ -20,12 +22,14 @@ export interface AuthResponse {
 })
 export class AuthService {
     private readonly API_URL = environment.apiBaseUrl + '/auth';
-    private readonly TOKEN_KEY = 'pfd_token';
+    private readonly REFRESH_TOKEN_KEY = 'pfd_refresh_token';
+
+    private accessToken = signal<string | null>(null);
 
     currentUser = signal<User | null>(null);
 
     constructor(private http: HttpClient, private router: Router) {
-        this.loadUserFromStorage();
+        window.addEventListener('storage', (event) => this.handleStorageEvent(event));
     }
 
     register(email: string, password: string, name?: string) {
@@ -40,72 +44,61 @@ export class AuthService {
         );
     }
 
+    refresh() {
+        const refreshToken = this.getRefreshToken();
+        if (!refreshToken) {
+            return throwError(() => new Error('No refresh token available'));
+        }
+
+        return this.http.post<AuthResponse>(`${this.API_URL}/refresh`, { refreshToken }).pipe(
+            tap(response => this.handleAuth(response)),
+        )
+    }
+
     logout() {
-        localStorage.removeItem(this.TOKEN_KEY);
+        const refreshToken = this.getRefreshToken();
+
+        if (refreshToken) {
+            this.http.post(`${this.API_URL}/logout`, { refreshToken }).pipe(
+                catchError(() => of(null)),
+            ).subscribe();
+        }
+
+        localStorage.removeItem(this.REFRESH_TOKEN_KEY);
+        this.accessToken.set(null);
         this.currentUser.set(null);
         this.router.navigate(['/auth/login']);
     }
 
     isLoggedIn(): boolean {
-        const token = this.getToken();
-        if (!token) return false;
-
-        const payload = this.parseJwtPayload(token);
-        if (!payload || typeof payload['exp'] !== 'number') return false;
-
-        return Date.now() < payload['exp'] * 1000;
+        return this.getRefreshToken() !== null;
     }
 
-    getToken(): string | null {
-        return localStorage.getItem(this.TOKEN_KEY);
+    getAccessToken(): string | null {
+        return this.accessToken();
     }
 
-    private parseJwtPayload(token: string): Record<string, unknown> | null {
-        try {
-            const parts = token.split('.');
-            if (parts.length < 2) return null;
+    getRefreshToken(): string | null {
+        return localStorage.getItem(this.REFRESH_TOKEN_KEY);
+    }
 
-            const base64 = parts[1].replace(/-/g, '+').replace(/_/g, '/');
-            const json = atob(base64);
-            const decoded = JSON.parse(json);
-
-            return decoded && typeof decoded === 'object' ? decoded : null;
-        } catch {
-            return null;
-        }
+    setAccessToken(token: string): void {
+        this.accessToken.set(token);
     }
 
     private handleAuth(response: AuthResponse) {
-        localStorage.setItem(this.TOKEN_KEY, response.token);
+        this.accessToken.set(response.accessToken);
+        localStorage.setItem(this.REFRESH_TOKEN_KEY, response.refreshToken);
         this.currentUser.set(response.user);
     }
 
-    private loadUserFromStorage() {
-        const token = this.getToken();
-        if (!token) return;
+    private handleStorageEvent(event: StorageEvent) {
+        if (event.key !== this.REFRESH_TOKEN_KEY) return;
 
-        const payload = this.parseJwtPayload(token);
-        if (!payload || typeof payload['exp'] !== 'number' || Date.now() >= payload['exp'] * 1000) {
-            localStorage.removeItem(this.TOKEN_KEY);
+        if (event.newValue === null && event.oldValue !== null) {
+            this.accessToken.set(null);
             this.currentUser.set(null);
-            return;
+            this.router.navigate(['/auth/login']);
         }
-
-        const user = this.mapUserFromPayload(payload);
-        this.currentUser.set(user);
-    }
-
-    private mapUserFromPayload(payload: Record<string, unknown>): User | null {
-        const id = typeof payload['sub'] === 'string'
-            ? payload['sub']
-            : typeof payload['id'] === 'string'
-            ? payload['id']
-            : null;
-
-        const email = typeof payload['email'] === 'string' ? payload['email'] : null;
-        const name = typeof payload['name'] === 'string' ? payload['name'] : undefined;
-
-        if (!id || !email) return null;
-        return { id, email, name};
     }
 }

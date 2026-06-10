@@ -44,6 +44,7 @@ export class TransactionsComponent {
 
   showModal = signal(false);
   editingTransaction = signal<Transaction | null>(null);
+  formError = signal<string | null>(null);
 
   form = signal({
     amount: '',
@@ -105,6 +106,7 @@ export class TransactionsComponent {
       description: '',
       date: new Date().toISOString().split('T')[0],
     });
+    this.formError.set(null);
     this.showModal.set(true);
   }
 
@@ -117,20 +119,37 @@ export class TransactionsComponent {
       description: tx.description,
       date: tx.date,
     });
+    this.formError.set(null);
     this.showModal.set(true);
   }
 
   closeModal() {
     this.showModal.set(false);
     this.editingTransaction.set(null);
+    this.formError.set(null);
   }
 
   saveTransaction() {
     const f = this.form();
-    if (!f.amount || !f.description || !f.date) return;
+    if (!f.amount || !f.description || !f.date) {
+      this.formError.set('Compila tutti i campi obbligatori')
+    };
+
+    const amount = parseFloat(f.amount);
+    if (isNaN(amount) || amount <= 0 || amount > 9999999.99) {
+      this.formError.set('Importo non valido (deve essere tra 0,01 e 9.999.999,99');
+      return;
+    }
+
+    if (f.description.length > 500) {
+      this.formError.set('La descrizione non può superare i 500 caratteri');
+      return;
+    }
+
+    this.formError.set(null);
 
     const dto = {
-      amount: parseFloat(f.amount),
+      amount,
       type: f.type,
       category: f.category,
       description: f.description,

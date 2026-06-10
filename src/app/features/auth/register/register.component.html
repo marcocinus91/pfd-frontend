@@ -47,14 +47,22 @@
         <div class="ff">
           <div class="ff-field">
             <span class="material-symbols-outlined">lock</span>
-            <input [type]="showPassword ? 'text' : 'password'" formControlName="password" placeholder="Almeno 6 caratteri" />
+            <input [type]="showPassword ? 'text' : 'password'" formControlName="password" placeholder="Almeno 12 caratteri" />
             <span class="material-symbols-outlined" style="margin-left:auto;cursor:pointer" (click)="togglePassword()">
               {{ showPassword ? 'visibility' : 'visibility_off' }}
             </span>
           </div>
           <div class="ff-label">Password</div>
           @if (form.get('password')?.invalid && form.get('password')?.touched) {
-            <div class="ff-error">Minimo 6 caratteri</div>
+            <div class="ff-error">
+              @if (form.get('password')?.hasError('minLength')) {
+                Minimo 12 caratteri
+              } @else if (form.get('password')?.hasError('maxLength')) {
+                Massimo 128 caratteri
+              } @else {
+                Password obbligatoria
+              }
+            </div>
           }
         </div>
 
