@@ -1,26 +1,7 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CurrencyPipe, DatePipe, NgClass } from '@angular/common';
 import { TransactionsStore } from '../../../store/transactions.store';
-
-const CATEGORY_LABELS: Record<string, string> = {
-  food: 'Cibo',
-  transport: 'Trasporti',
-  entertainment: 'Intrattenimento',
-  health: 'Salute',
-  shopping: 'Shopping',
-  salary: 'Stipendio',
-  other: 'Altro',
-};
-
-const CATEGORY_ICONS: Record<string, string> = {
-  food: 'restaurant',
-  transport: 'directions_car',
-  entertainment: 'movie',
-  health: 'medical_services',
-  shopping: 'shopping_bag',
-  salary: 'payments',
-  other: 'category',
-};
+import { CATEGORY_ICONS, CATEGORY_LABELS, getCategoryColor } from '../../../shared/constants/categories';
 
 @Component({
   selector: 'app-dashboard',
@@ -40,18 +21,7 @@ export class DashboardComponent implements OnInit {
     this.store.loadSummary();
   }
 
-  getCategoryColor(cat: string): string {
-    const colors: Record<string, string> = {
-      food: 'var(--cat-food)',
-      transport: 'var(--cat-transport)',
-      entertainment: 'var(--cat-entertainment)',
-      health: 'var(--cat-health)',
-      shopping: 'var(--cat-shopping)',
-      salary: 'var(--cat-salary)',
-      other: 'var(--cat-other)',
-    };
-    return colors[cat] || 'var(--cat-other)';
-  }
+  getCategoryColor = getCategoryColor
 
   getMonthLabel(key: string): string {
     const [year, month] = key.split('-');

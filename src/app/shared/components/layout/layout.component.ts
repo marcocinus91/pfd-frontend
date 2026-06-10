@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
+import { ResponsiveService } from '../../../core/services/responsive.service';
 
 @Component({
   selector: 'app-layout',
@@ -19,23 +20,11 @@ export class LayoutComponent {
     private router: Router,
   ) {}
 
-  isMobileProfileOpen = false;
+  responsive = inject(ResponsiveService);
+  isMobile = this.responsive.isMobile;
 
   logout() {
     this.authService.logout();
-  }
-
-  toggleMobileProfile() {
-    this.isMobileProfileOpen = !this.isMobileProfileOpen;
-  }
-
-  closeMobileProfile() {
-    this.isMobileProfileOpen = false;
-  }
-
-  logoutFromMobileProfile() {
-    this.isMobileProfileOpen = false;
-    this.logout();
   }
  
   getUserInitials(): string {

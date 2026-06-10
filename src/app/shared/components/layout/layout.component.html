@@ -1,83 +1,75 @@
 <div class="app">
-  <aside class="sidebar">
-    <div class="sb-brand">
-      <div class="mobile-topbar">
+  @if (!isMobile()) {
+    <aside class="sidebar">
+      <div class="sb-brand">
         <div class="sb-logo">
           <span class="material-symbols-outlined">savings</span>
         </div>
         <div class="sb-title">
           <b>FinTrack</b>
+          <span>Finanza personale</span>
         </div>
       </div>
-      <div class="sb-logo">
-        <span class="material-symbols-outlined">savings</span>
+
+      <nav class="sb-nav">
+        <div class="sb-cap">Generale</div>
+        <a class="nav-item" routerLink="/dashboard" routerLinkActive="active">
+          <span class="material-symbols-outlined">dashboard</span> Dashboard
+        </a>
+        <a class="nav-item" routerLink="/transactions" routerLinkActive="active">
+          <span class="material-symbols-outlined">receipt_long</span> Transazioni
+        </a>
+      </nav>
+
+      <div class="sb-spacer"></div>
+
+      <div class="sb-user">
+        <div class="sb-avatar">
+          {{ getUserInitials() }}
+        </div>
+        <div class="meta">
+          <b>{{ authService.currentUser()?.name || 'Utente' }}</b>
+          <span>{{ authService.currentUser()?.email }}</span>
+        </div>
+        <button class="icon-btn" title="Logout" (click)="logout()">
+          <span class="material-symbols-outlined">logout</span>
+        </button>
       </div>
-      <div class="sb-title">
+    </aside>
+  }
+
+  @if (isMobile()) {
+    <header class="mobile-app-bar">
+      <div class="mab-brand">
+        <div class="mab-logo">
+          <span class="material-symbols-outlined">savings</span>
+        </div>
         <b>FinTrack</b>
-        <span>Finanza personale</span>
       </div>
-    </div>
-
-    <nav class="sb-nav">
-      <div class="sb-cap">Generale</div>
-      <a class="nav-item" routerLink="/dashboard" routerLinkActive="active">
-        <span class="material-symbols-outlined">dashboard</span> Dashboard
-      </a>
-      <a class="nav-item" routerLink="/transactions" routerLinkActive="active">
-        <span class="material-symbols-outlined">receipt_long</span> Transazioni
-      </a>
-    </nav>
-
-    <div class="sb-spacer"></div>
-
-    <div class="sb-user">
-      <div class="sb-avatar">
-        {{ getUserInitials() }}
-      </div>
-      <div class="meta">
-        <b>{{ authService.currentUser()?.name || 'Utente' }}</b>
-        <span>{{ authService.currentUser()?.email }}</span>
-      </div>
-      <button class="icon-btn" title="Logout" (click)="logout()">
-        <span class="material-symbols-outlined">logout</span>
+      <button class="icon-btn" type="button" aria-label="Notifiche">
+        <span class="material-symbols-outlined">notifications</span>
       </button>
-    </div>
-  </aside>
+    </header>
+  }
 
   <main class="main">
     <router-outlet />
   </main>
-  <nav class="mobile-bottom-nav" aria-label="Navigazione mobile">
-  <a class="mb-nav-item" routerLink="/dashboard" routerLinkActive="active">
-    <span class="material-symbols-outlined">dashboard</span>
-  </a>
-  <a class="mb-nav-item" routerLink="/transactions" routerLinkActive="active">
-    <span class="material-symbols-outlined">receipt_long</span>
-  </a>
-  <button
-    class="mb-nav-item"
-    type="button"
-    [class.active]="isMobileProfileOpen"
-    (click)="toggleMobileProfile()"
-    aria-label="Profilo utente">
-    <span class="material-symbols-outlined">person</span>
-  </button>
-</nav>
 
-@if (isMobileProfileOpen) {
-  <div class="mobile-profile-backdrop" (click)="closeMobileProfile()"></div>
-  <div class="mobile-profile-pop" role="dialog" aria-label="Profilo utente">
-    <div class="mobile-profile-head">
-      <div class="sb-avatar">{{ getUserInitials() }}</div>
-      <div class="meta">
-        <b>{{ authService.currentUser()?.name || 'Utente' }}</b>
-        <span>{{ authService.currentUser()?.email }}</span>
-      </div>
-    </div>
-    <button class="btn btn-filled btn-block" type="button" (click)="logoutFromMobileProfile()">
-      <span class="material-symbols-outlined">logout</span>
-      Logout
-    </button>
-  </div>
-}
+  @if (isMobile()) {
+    <nav class="mobile-bottom-nav" aria-label="Navigazione mobile">
+      <a class="mb-nav-item" routerLink="/dashboard" routerLinkActive="active">
+        <span class="material-symbols-outlined">dashboard</span>
+        <span class="mb-nav-label">Dashboard</span>
+      </a>
+      <a class="mb-nav-item" routerLink="/transactions" routerLinkActive="active">
+        <span class="material-symbols-outlined">receipt_long</span>
+        <span class="mb-nav-label">Transazioni</span>
+      </a>
+      <a class="mb-nav-item" routerLink="/profile" routerLinkActive="active">
+        <span class="material-symbols-outlined">person</span>
+        <span class="mb-nav-label">Profilo</span>
+      </a>
+    </nav>
+  }
 </div>

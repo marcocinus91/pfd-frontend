@@ -1,0 +1,62 @@
+<div class="page profile-page">
+    <header class="profile-header">
+        <div class="profile-avatar">{{ getUserInitials() }}</div>
+        <b class="profile-name">{{ authService.currentUser()?.name || 'Utente' }}</b>
+        <span class="profile-email">{{ authService.currentUser()?.email }}</span>
+    </header>
+
+    <div class="settings-group">
+        <div class="settings-row disabled">
+            <div class="settings-icon"><span class="material-symbols-outlined">person</span></div>
+            <div class="settings-text">
+                <b>Dati personali</b>
+                <span>Nome, email, password</span>
+            </div>
+            <span class="settings-badge">Presto</span>
+        </div>
+        <div class="settings-row disabled">
+            <div class="settings-icon"><span class="material-symbols-outlined">sell</span></div>
+            <div class="settings-text">
+                <b>Categorie</b>
+                <span>Personalizza le categorie</span>
+            </div>
+            <span class="settings-badge">Presto</span>
+        </div>
+        <div class="settings-row disabled">
+            <div class="settings-icon"><span class="material-symbols-outlined">notifications</span></div>
+            <div class="settings-text">
+                <b>Notifiche</b>
+                <span>Avvisi e promemoria</span>
+            </div>
+            <span class="settings-badge">Presto</span>
+        </div>
+    </div>
+
+    <div class="settings-group">
+        <div class="settings-row disabled">
+            <div class="settings-icon"><span class="material-symbols-outlined">download</span></div>
+            <div class="settings-text">
+                <b>Esporta dati</b>
+                <span>Scarica in CSV</span>
+            </div>
+            <span class="settings-badge">Presto</span>
+        </div>
+        <div class="settings-row disabled">
+            <div class="settings-icon"><span class="material-symbols-outlined">help</span></div>
+            <div class="settings-text">
+                <b>Aiuto e supporto</b>
+            </div>
+            <span class="settings-badge">Presto</span>
+        </div>
+    </div>
+
+    <div class="settings-group">
+        <button class="settings-row settings-row--danger" type="button" (click)="logout()">
+            <div class="settings-icon settings-icon--danger"><span class="material-symbols-outlined">logout</span></div>
+            <div class="settings-text">
+                <b>Logout</b>
+            </div>
+        </button>
+    </div>
+
+</div>
