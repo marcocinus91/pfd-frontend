@@ -97,28 +97,37 @@
           <span class="leg-dot" style="background: var(--expense-bar); margin-left: 12px;"></span> Uscite
         </div>
       </div>
-      <div class="bar-chart">
-        @for (entry of getByMonthEntries(); track entry[0]) {
-        <div class="bar-group">
-          <div class="bar-pair">
-            <div class="bar income-bar" [style.height.%]="(entry[1].income / getMaxMonthValue()) * 100">
-            </div>
-            <div class="bar expense-bar" [style.height.%]="(entry[1].expenses / getMaxMonthValue()) * 100">
-            </div>
-          </div>
-          <div class="bar-label">{{ getMonthLabel(entry[0]) }}</div>
-        </div>
-        }
+      <div class="ngx-chart-wrap">
+      <ngx-charts-bar-vertical-2d
+        [results]="monthlyChartData()"
+        [scheme]="barColorScheme"
+        [xAxis]="true"
+        [yAxis]="true"
+        [legend]="false"
+        [groupPadding]="16"
+        [barPadding]="4"
+        style="display:block; height: 220px;"
+      ></ngx-charts-bar-vertical-2d>
       </div>
     </div>
 
-    <!-- Donut chart categorie -->
+        <!-- Donut chart categorie -->
     <div class="card chart-card">
       <div class="chart-head">
         <div>
           <div class="chart-title">Spese per categoria</div>
           <div class="chart-sub">Distribuzione uscite</div>
         </div>
+      </div>
+      <div class="ngx-chart-wrap">
+        <ngx-charts-pie-chart
+          [results]="categoryChartData()"
+          [customColors]="categoryColors()"
+          [doughnut]="true"
+          [arcWidth]="0.35"
+          [labels]="false"
+          [legend]="false">
+        </ngx-charts-pie-chart>
       </div>
       <div class="donut-list">
         @for (entry of getByCategoryEntries(); track entry[0]) {
@@ -127,16 +136,12 @@
             <span class="material-symbols-outlined">{{ categoryIcons[entry[0]] }}</span>
           </span>
           <span class="donut-label">{{ categoryLabels[entry[0]] }}</span>
-          <div class="donut-bar-wrap">
-            <div class="donut-bar" [style.width.%]="(entry[1] / (store.summary()?.totalExpenses || 1)) * 100"
-              [style.background]="getCategoryColor(entry[0])">
-            </div>
-          </div>
           <span class="donut-amt">{{ entry[1] | currency:'EUR':'symbol':'1.2-2':'it' }}</span>
         </div>
         }
       </div>
     </div>
+
 
   </div>
 

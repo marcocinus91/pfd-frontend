@@ -1,12 +1,13 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, computed, inject } from '@angular/core';
 import { CurrencyPipe, DatePipe, NgClass } from '@angular/common';
 import { TransactionsStore } from '../../../store/transactions.store';
-import { CATEGORY_ICONS, CATEGORY_LABELS, getCategoryColor } from '../../../shared/constants/categories';
+import { CATEGORY_ICONS, CATEGORY_LABELS, CATEGORY_COLORS_HEX, getCategoryColor } from '../../../shared/constants/categories';
+import { BarChartModule, PieChartModule, Color, ScaleType } from '@swimlane/ngx-charts';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CurrencyPipe, DatePipe, NgClass],
+  imports: [CurrencyPipe, DatePipe, NgClass, BarChartModule, PieChartModule],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
 })
@@ -56,4 +57,35 @@ export class DashboardComponent implements OnInit {
       .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
       .slice(0, 5);
   }
+
+  barColorScheme: Color = {
+    name: 'incomeExpense',
+    selectable: true,
+    group: ScaleType.Ordinal,
+    domain: ['#4caf50', '#f44336'],
+  };
+
+  monthlyChartData = computed(() => {
+    return this.getByMonthEntries().map(([key, value]) => ({
+      name: this.getMonthLabel(key),
+      series: [
+        { name: 'Entrate', value: value.income },
+        { name: 'Uscite', value: value.expenses},
+      ]
+    }))
+  })
+
+  categoryChartData = computed(() => {
+    return this.getByCategoryEntries().map(([key, value]) => ({
+      name: this.categoryLabels[key],
+      value,
+    }));
+  });
+
+  categoryColors = computed(() => {
+    return this.getByCategoryEntries().map(([key]) => ({
+      name: this.categoryLabels[key],
+      value: CATEGORY_COLORS_HEX[key] ?? CATEGORY_COLORS_HEX['other']
+    }))
+  })
 }

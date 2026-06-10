@@ -28,6 +28,16 @@ export const CATEGORY_COLORS: Record<string, string> = {
     other: 'var(--cat-other)',
 };
 
+export const CATEGORY_COLORS_HEX: Record<string, string> = {
+    food: '#ef6c00',
+    transport: '#1e88e5',
+    entertainment: '#8e24aa',
+    health: '#00897b',
+    shopping: '#d81b60',
+    salary: '#43a047',
+    other: '#6d6f76',
+}
+
 export function getCategoryColor(category: string): string {
     return CATEGORY_COLORS[category] ?? CATEGORY_COLORS['other'];
 }
