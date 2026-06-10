@@ -4,11 +4,13 @@ import { FormsModule } from '@angular/forms';
 import { TransactionsStore } from '../../../store/transactions.store';
 import { Transaction } from '../../../core/services/transactions.service';
 import { CATEGORY_LABELS, CATEGORY_ICONS, getCategoryColor } from '../../../shared/constants/categories';
+import { ResponsiveService } from '../../../core/services/responsive.service';
+import { TransactionRowComponent } from '../../../shared/components/transaction-row/transaction-row.component';
 
 @Component({
   selector: 'app-transactions',
   standalone: true,
-  imports: [CurrencyPipe, DatePipe, NgClass, FormsModule],
+  imports: [CurrencyPipe, DatePipe, NgClass, FormsModule, TransactionRowComponent],
   templateUrl: './transactions.component.html',
   styleUrl: './transactions.component.scss'
 })
@@ -17,6 +19,9 @@ export class TransactionsComponent {
 
   categoryLabels = CATEGORY_LABELS;
   categoryIcons = CATEGORY_ICONS;
+
+  responsive = inject(ResponsiveService);
+  isMobile = this.responsive.isMobile;
 
   filterCategory = signal<string>('');
   filterType = signal<string>('');
@@ -54,6 +59,28 @@ export class TransactionsComponent {
       return true;
     }).sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
   });
+
+  groupedByDate = computed(() => {
+    const groups = new Map<string, Transaction[]>();
+    for (const tx of this.filteredTransactions()) {
+      const key = tx.date.substring(0, 10);
+      if (!groups.has(key)) groups.set(key, []);
+      groups.get(key)!.push(tx);
+    }
+    return Array.from(groups.entries()).map(([date, transactions]) => ({
+      date,
+      label: this.getDateGroupLabel(date),
+      transactions,
+    }));
+  });
+
+  getDateGroupLabel(dateStr: string): string {
+    const date = new Date(dateStr);
+    const today = new Date();
+    const isToday = date.toDateString() === today.toDateString();
+    const formatted = date.toLocaleDateString('it-IT', { day: 'numeric', month: 'long' });
+    return isToday ? `Oggi · ${formatted}` : formatted;
+  }
 
   ngOnInit() {
     this.store.loadAll();

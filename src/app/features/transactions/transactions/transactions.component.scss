@@ -1,0 +1,108 @@
+.mobile-search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 44px;
+  border-radius: 13px;
+  background: var(--surface);
+  border: 1px solid var(--outline-strong);
+  padding: 0 14px;
+  margin-bottom: 12px;
+
+  .material-symbols-outlined {
+    color: var(--text-3);
+    font-size: 20px;
+  }
+
+  input {
+    flex: 1;
+    border: 0;
+    background: transparent;
+    outline: none;
+    font-family: var(--font);
+    font-size: 14px;
+    color: var(--text);
+  }
+}
+
+.chip-filters {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 4px;
+  margin-bottom: 12px;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.chip-select {
+  appearance: none;
+  flex: none;
+  height: 36px;
+  border-radius: var(--radius-chip-pill);
+  border: 1px solid var(--outline-strong);
+  background: var(--surface);
+  padding: 0 14px;
+  font-family: var(--font);
+  font-size: 13px;
+  color: var(--text);
+  cursor: pointer;
+
+  &.active {
+    background: var(--primary-container);
+    border-color: var(--primary);
+    color: var(--primary);
+    font-weight: 600;
+  }
+}
+
+.date-group-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-3);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 16px 0 6px;
+
+  &:first-child {
+    padding-top: 4px;
+  }
+}
+
+app-transaction-row {
+  display: block;
+  cursor: pointer;
+}
+
+app-transaction-row:not(:last-child) .tx-row {
+  border-bottom: 1px solid var(--outline);
+}
+
+.fab-add {
+  position: fixed;
+  right: 16px;
+  bottom: calc(var(--bottom-nav-height) + 12px);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 48px;
+  padding: 0 20px;
+  border: none;
+  border-radius: var(--radius-fab);
+  background: var(--primary);
+  color: var(--on-primary);
+  box-shadow: var(--shadow-elevated);
+  font-family: var(--font);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  z-index: 50;
+
+  &:active {
+    background: var(--primary-press);
+  }
+}
+

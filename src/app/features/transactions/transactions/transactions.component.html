@@ -1,16 +1,20 @@
 <div class="page">
-  <div class="page-head page-head-row">
+    <div class="page-head page-head-row">
     <div>
       <div class="crumb">Generale</div>
       <h1>Transazioni</h1>
       <p class="sub">Gestisci entrate e uscite</p>
     </div>
+    @if (!isMobile()) {
     <button class="btn btn-filled" (click)="openAddModal()">
       <span class="material-symbols-outlined">add</span> Aggiungi transazione
     </button>
+    }
   </div>
 
-  <!-- Filtri -->
+
+  <!-- Filtri (desktop) -->
+  @if (!isMobile()) {
   <div class="filters">
     <div class="field">
       <span class="material-symbols-outlined">calendar_month</span>
@@ -18,7 +22,7 @@
       <select [value]="filterMonth()" (change)="filterMonth.set($any($event.target).value)">
         <option value="">Tutti i mesi</option>
         @for (month of availableMonths(); track month) {
-          <option [value]="month">{{ getMonthLabel(month) }}</option>
+        <option [value]="month">{{ getMonthLabel(month) }}</option>
         }
       </select>
       <span class="material-symbols-outlined caret">expand_more</span>
@@ -30,7 +34,7 @@
       <select [value]="filterCategory()" (change)="filterCategory.set($any($event.target).value)">
         <option value="">Tutte le categorie</option>
         @for (cat of categories; track cat.value) {
-          <option [value]="cat.value">{{ cat.label }}</option>
+        <option [value]="cat.value">{{ cat.label }}</option>
         }
       </select>
       <span class="material-symbols-outlined caret">expand_more</span>
@@ -51,196 +55,253 @@
 
     <div class="field field-search">
       <span class="material-symbols-outlined">search</span>
-      <input type="text" placeholder="Cerca descrizione…"
-        [value]="searchText()"
+      <input type="text" placeholder="Cerca descrizione…" [value]="searchText()"
         (input)="searchText.set($any($event.target).value)" />
     </div>
   </div>
+  }
+
+  <!-- Search + chip filtri (mobile) -->
+  @if (isMobile()) {
+  <div class="mobile-search">
+    <span class="material-symbols-outlined">search</span>
+    <input type="text" placeholder="Cerca descrizione…" [value]="searchText()"
+      (input)="searchText.set($any($event.target).value)" />
+  </div>
+
+  <div class="chip-filters">
+    <select class="chip-select" [class.active]="filterMonth()" [value]="filterMonth()"
+      (change)="filterMonth.set($any($event.target).value)">
+      <option value="">Mese</option>
+      @for (month of availableMonths(); track month) {
+      <option [value]="month">{{ getMonthLabel(month) }}</option>
+      }
+    </select>
+
+    <select class="chip-select" [class.active]="filterCategory()" [value]="filterCategory()"
+      (change)="filterCategory.set($any($event.target).value)">
+      <option value="">Categoria</option>
+      @for (cat of categories; track cat.value) {
+      <option [value]="cat.value">{{ cat.label }}</option>
+      }
+    </select>
+
+    <select class="chip-select" [class.active]="filterType()" [value]="filterType()"
+      (change)="filterType.set($any($event.target).value)">
+      <option value="">Tipo</option>
+      <option value="income">Entrate</option>
+      <option value="expense">Uscite</option>
+    </select>
+  </div>
+  }
 
   @if (store.isLoading()) {
-    <div class="card table-card">
-      <table class="mtable">
-        <thead>
-          <tr>
-            <th style="width:120px">Data</th>
-            <th>Descrizione</th>
-            <th style="width:180px">Categoria</th>
-            <th style="width:110px">Tipo</th>
-            <th style="width:140px;text-align:right">Importo</th>
-            <th style="width:96px;text-align:right">Azioni</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (i of [1,2,3,4,5,6,7]; track i) {
-            <tr>
-              <td><div class="skel skel-line" style="width:70px"></div></td>
-              <td><div class="skel skel-line" style="width:55%"></div></td>
-              <td><div class="skel skel-line" style="width:80px"></div></td>
-              <td><div class="skel" style="width:64px;height:24px;border-radius:8px"></div></td>
-              <td style="text-align:right"><div class="skel skel-line" style="width:70px;margin-left:auto"></div></td>
-              <td style="text-align:right"><div class="skel" style="width:30px;height:30px;border-radius:50%;margin-left:auto"></div></td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
+  <div class="card table-card">
+    <table class="mtable">
+      <thead>
+        <tr>
+          <th style="width:120px">Data</th>
+          <th>Descrizione</th>
+          <th style="width:180px">Categoria</th>
+          <th style="width:110px">Tipo</th>
+          <th style="width:140px;text-align:right">Importo</th>
+          <th style="width:96px;text-align:right">Azioni</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (i of [1,2,3,4,5,6,7]; track i) {
+        <tr>
+          <td>
+            <div class="skel skel-line" style="width:70px"></div>
+          </td>
+          <td>
+            <div class="skel skel-line" style="width:55%"></div>
+          </td>
+          <td>
+            <div class="skel skel-line" style="width:80px"></div>
+          </td>
+          <td>
+            <div class="skel" style="width:64px;height:24px;border-radius:8px"></div>
+          </td>
+          <td style="text-align:right">
+            <div class="skel skel-line" style="width:70px;margin-left:auto"></div>
+          </td>
+          <td style="text-align:right">
+            <div class="skel" style="width:30px;height:30px;border-radius:50%;margin-left:auto"></div>
+          </td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
 
   } @else if (store.error()) {
-    <div class="card">
-      <div class="state-block">
-        <div class="state-ic error"><span class="material-symbols-outlined">error</span></div>
-        <h3>Errore nel caricamento</h3>
-        <p>Non è stato possibile recuperare le transazioni.</p>
-        <button class="btn btn-filled" (click)="store.loadAll()">
-          <span class="material-symbols-outlined">refresh</span> Riprova
-        </button>
-      </div>
+  <div class="card">
+    <div class="state-block">
+      <div class="state-ic error"><span class="material-symbols-outlined">error</span></div>
+      <h3>Errore nel caricamento</h3>
+      <p>Non è stato possibile recuperare le transazioni.</p>
+      <button class="btn btn-filled" (click)="store.loadAll()">
+        <span class="material-symbols-outlined">refresh</span> Riprova
+      </button>
     </div>
+  </div>
 
   } @else if (filteredTransactions().length === 0) {
-    <div class="card">
-      <div class="state-block">
-        <div class="state-ic empty"><span class="material-symbols-outlined">receipt_long</span></div>
-        <h3>Nessuna transazione trovata</h3>
-        <p>Non ci sono transazioni per i filtri selezionati.</p>
-        <button class="btn btn-filled" (click)="openAddModal()">
-          <span class="material-symbols-outlined">add</span> Aggiungi transazione
-        </button>
-      </div>
+  <div class="card">
+    <div class="state-block">
+      <div class="state-ic empty"><span class="material-symbols-outlined">receipt_long</span></div>
+      <h3>Nessuna transazione trovata</h3>
+      <p>Non ci sono transazioni per i filtri selezionati.</p>
+      <button class="btn btn-filled" (click)="openAddModal()">
+        <span class="material-symbols-outlined">add</span> Aggiungi transazione
+      </button>
     </div>
+  </div>
 
   } @else {
-    <div class="card table-card">
-      <table class="mtable">
-        <thead>
-          <tr>
-            <th style="width:120px">Data</th>
-            <th>Descrizione</th>
-            <th style="width:180px">Categoria</th>
-            <th style="width:110px">Tipo</th>
-            <th style="width:140px;text-align:right">Importo</th>
-            <th style="width:96px;text-align:right">Azioni</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (tx of filteredTransactions(); track tx.id) {
-            <tr>
-              <td class="td-date">{{ tx.date | date:'dd/MM/yyyy' }}</td>
-              <td class="td-desc">{{ tx.description }}</td>
-              <td>
-                <span class="tbl-cat">
-                  <span class="ic" [style.background]="getCategoryColor(tx.category)">
-                    <span class="material-symbols-outlined">{{ categoryIcons[tx.category] }}</span>
-                  </span>
-                  {{ categoryLabels[tx.category] }}
-                </span>
-              </td>
-              <td>
-                <span class="chip" [ngClass]="tx.type === 'income' ? 'chip-income' : 'chip-expense'">
-                  {{ tx.type === 'income' ? 'Entrata' : 'Uscita' }}
-                </span>
-              </td>
-              <td class="td-amt" [ngClass]="tx.type">
-                {{ tx.type === 'income' ? '+ ' : '− ' }}{{ tx.amount | currency:'EUR':'symbol':'1.2-2':'it' }}
-              </td>
-              <td class="td-actions">
-                <button class="row-act" title="Modifica" (click)="openEditModal(tx)">
-                  <span class="material-symbols-outlined">edit</span>
-                </button>
-                <button class="row-act del" title="Elimina" (click)="deleteTransaction(tx.id)">
-                  <span class="material-symbols-outlined">delete</span>
-                </button>
-              </td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
+  @if (isMobile()) {
+  <div class="card">
+    @for (group of groupedByDate(); track group.date) {
+    <div class="date-group-label">{{ group.label }}</div>
+    @for (tx of group.transactions; track tx.id) {
+    <app-transaction-row [transaction]="tx" (click)="openEditModal(tx)" />
+    }
+    }
+  </div>
+  } @else {
+  <div class="card table-card">
+    <table class="mtable">
+      <thead>
+        <tr>
+          <th style="width:120px">Data</th>
+          <th>Descrizione</th>
+          <th style="width:180px">Categoria</th>
+          <th style="width:110px">Tipo</th>
+          <th style="width:140px;text-align:right">Importo</th>
+          <th style="width:96px;text-align:right">Azioni</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (tx of filteredTransactions(); track tx.id) {
+        <tr>
+          <td class="td-date">{{ tx.date | date:'dd/MM/yyyy' }}</td>
+          <td class="td-desc">{{ tx.description }}</td>
+          <td>
+            <span class="tbl-cat">
+              <span class="ic" [style.background]="getCategoryColor(tx.category)">
+                <span class="material-symbols-outlined">{{ categoryIcons[tx.category] }}</span>
+              </span>
+              {{ categoryLabels[tx.category] }}
+            </span>
+          </td>
+          <td>
+            <span class="chip" [ngClass]="tx.type === 'income' ? 'chip-income' : 'chip-expense'">
+              {{ tx.type === 'income' ? 'Entrata' : 'Uscita' }}
+            </span>
+          </td>
+          <td class="td-amt" [ngClass]="tx.type">
+            {{ tx.type === 'income' ? '+ ' : '− ' }}{{ tx.amount | currency:'EUR':'symbol':'1.2-2':'it' }}
+          </td>
+          <td class="td-actions">
+            <button class="row-act" title="Modifica" (click)="openEditModal(tx)">
+              <span class="material-symbols-outlined">edit</span>
+            </button>
+            <button class="row-act del" title="Elimina" (click)="deleteTransaction(tx.id)">
+              <span class="material-symbols-outlined">delete</span>
+            </button>
+          </td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+  }
+
+  }
+    @if (isMobile()) {
+  <button class="fab-add" (click)="openAddModal()">
+    <span class="material-symbols-outlined">add</span> Aggiungi
+  </button>
   }
 </div>
 
 <!-- Modal -->
 @if (showModal()) {
-  <div class="scrim" (click)="closeModal()">
-    <div class="dialog" (click)="$event.stopPropagation()">
-      <div class="dialog-head">
-        <div>
-          <h2>{{ editingTransaction() ? 'Modifica transazione' : 'Nuova transazione' }}</h2>
-          <p>{{ editingTransaction() ? 'Aggiorna i dettagli.' : 'Inserisci i dettagli del movimento.' }}</p>
+<div class="scrim" (click)="closeModal()">
+  <div class="dialog" (click)="$event.stopPropagation()">
+    <div class="dialog-head">
+      <div>
+        <h2>{{ editingTransaction() ? 'Modifica transazione' : 'Nuova transazione' }}</h2>
+        <p>{{ editingTransaction() ? 'Aggiorna i dettagli.' : 'Inserisci i dettagli del movimento.' }}</p>
+      </div>
+      <button class="icon-btn" (click)="closeModal()" style="color:var(--text-3)">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+    </div>
+
+    <div class="dialog-body">
+      <div class="type-toggle">
+        <div class="type-opt" [class.on-expense]="form().type === 'expense'" (click)="setType('expense')">
+          <span class="material-symbols-outlined">north_east</span> Uscita
         </div>
-        <button class="icon-btn" (click)="closeModal()" style="color:var(--text-3)">
-          <span class="material-symbols-outlined">close</span>
-        </button>
+        <div class="type-opt" [class.on-income]="form().type === 'income'" (click)="setType('income')">
+          <span class="material-symbols-outlined">south_west</span> Entrata
+        </div>
       </div>
 
-      <div class="dialog-body">
-        <div class="type-toggle">
-          <div class="type-opt" [class.on-expense]="form().type === 'expense'" (click)="setType('expense')">
-            <span class="material-symbols-outlined">north_east</span> Uscita
-          </div>
-          <div class="type-opt" [class.on-income]="form().type === 'income'" (click)="setType('income')">
-            <span class="material-symbols-outlined">south_west</span> Entrata
-          </div>
+      <div class="ff" style="margin-top:18px">
+        <div class="ff-field">
+          <span class="material-symbols-outlined">euro</span>
+          <input type="number" [value]="form().amount" (input)="updateForm('amount', $any($event.target).value)"
+            min="0.01" max="9999999.99" step="0.01" placeholder="0,00" />
         </div>
+        <div class="ff-label">Importo</div>
+      </div>
 
-        <div class="ff" style="margin-top:18px">
+      <div class="grid-2">
+        <div class="ff">
           <div class="ff-field">
-            <span class="material-symbols-outlined">euro</span>
-            <input type="number" [value]="form().amount"
-              (input)="updateForm('amount', $any($event.target).value)"
-              min="0.01" max="9999999.99" step="0.01"
-              placeholder="0,00" />
+            <span class="material-symbols-outlined">sell</span>
+            <select [value]="form().category" (change)="updateForm('category', $any($event.target).value)"
+              style="border:none;background:transparent;flex:1;outline:none;font-size:14px;color:var(--text)">
+              @for (cat of categories; track cat.value) {
+              <option [value]="cat.value">{{ cat.label }}</option>
+              }
+            </select>
           </div>
-          <div class="ff-label">Importo</div>
-        </div>
-
-        <div class="grid-2">
-          <div class="ff">
-            <div class="ff-field">
-              <span class="material-symbols-outlined">sell</span>
-              <select [value]="form().category"
-                (change)="updateForm('category', $any($event.target).value)"
-                style="border:none;background:transparent;flex:1;outline:none;font-size:14px;color:var(--text)">
-                @for (cat of categories; track cat.value) {
-                  <option [value]="cat.value">{{ cat.label }}</option>
-                }
-              </select>
-            </div>
-            <div class="ff-label">Categoria</div>
-          </div>
-
-          <div class="ff">
-            <div class="ff-field">
-              <span class="material-symbols-outlined">event</span>
-              <input type="date" [value]="form().date"
-                (change)="updateForm('date', $any($event.target).value)" />
-            </div>
-            <div class="ff-label">Data</div>
-          </div>
+          <div class="ff-label">Categoria</div>
         </div>
 
         <div class="ff">
           <div class="ff-field">
-            <span class="material-symbols-outlined">notes</span>
-            <input type="text" [value]="form().description"
-              (input)="updateForm('description', $any($event.target).value)"
-              maxlength="500"
-              placeholder="Descrizione del movimento" />
+            <span class="material-symbols-outlined">event</span>
+            <input type="date" [value]="form().date" (change)="updateForm('date', $any($event.target).value)" />
           </div>
-          <div class="ff-label">Descrizione</div>
+          <div class="ff-label">Data</div>
         </div>
-        @if (formError()) {
-            <div class="ff-error" style="margin-top:4px">{{ formError() }}</div>
-          }
       </div>
 
-      <div class="dialog-foot">
-        <button class="btn btn-text" (click)="closeModal()">Annulla</button>
-        <button class="btn btn-filled" (click)="saveTransaction()">
-          <span class="material-symbols-outlined">check</span>
-          {{ editingTransaction() ? 'Aggiorna' : 'Salva' }}
-        </button>
+      <div class="ff">
+        <div class="ff-field">
+          <span class="material-symbols-outlined">notes</span>
+          <input type="text" [value]="form().description" (input)="updateForm('description', $any($event.target).value)"
+            maxlength="500" placeholder="Descrizione del movimento" />
+        </div>
+        <div class="ff-label">Descrizione</div>
       </div>
+      @if (formError()) {
+      <div class="ff-error" style="margin-top:4px">{{ formError() }}</div>
+      }
+    </div>
+
+    <div class="dialog-foot">
+      <button class="btn btn-text" (click)="closeModal()">Annulla</button>
+      <button class="btn btn-filled" (click)="saveTransaction()">
+        <span class="material-symbols-outlined">check</span>
+        {{ editingTransaction() ? 'Aggiorna' : 'Salva' }}
+      </button>
     </div>
   </div>
+</div>
 }
