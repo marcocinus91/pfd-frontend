@@ -1,0 +1,18 @@
+<div class="tx-row">
+  <span class="tx-row-icon" [style.background]="getCategoryColor(transaction.category)">
+    <span class="material-symbols-outlined">{{ categoryIcons[transaction.category] }}</span>
+  </span>
+  <div class="tx-row-body">
+    <div class="tx-row-desc">{{ transaction.description }}</div>
+    <div class="tx-row-meta">
+      <span class="tx-row-cat-dot" [style.background]="getCategoryColor(transaction.category)"></span>
+      {{ categoryLabels[transaction.category] }}
+      <span class="chip" [ngClass]="transaction.type === 'income' ? 'chip-income' : 'chip-expense'">
+        {{ transaction.type === 'income' ? 'Entrata' : 'Uscita' }}
+      </span>
+    </div>
+  </div>
+  <div class="tx-row-amt" [ngClass]="transaction.type">
+    {{ transaction.type === 'income' ? '+ ' : '− ' }}{{ transaction.amount | currency:'EUR':'symbol':'1.2-2':'it' }}
+  </div>
+</div>

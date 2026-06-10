@@ -356,5 +356,21 @@
   font-variant-numeric: tabular-nums;
 }
 
+.see-all-link {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--primary);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.tx-list {
+  display: flex;
+  flex-direction: column;
+
+  app-transaction-row:not(:last-child) .tx-row {
+    border-bottom: 1px solid var(--outline);
+  }
+}
 
 }

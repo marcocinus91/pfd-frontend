@@ -14,11 +14,13 @@ import {
   ScaleType,
 } from '@swimlane/ngx-charts';
 import { ResponsiveService } from '../../../core/services/responsive.service';
+import { RouterLink } from '@angular/router';
+import { TransactionRowComponent } from '../../../shared/components/transaction-row/transaction-row.component';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CurrencyPipe, DatePipe, NgClass, BarChartModule, PieChartModule],
+  imports: [CurrencyPipe, DatePipe, NgClass, BarChartModule, PieChartModule, RouterLink, TransactionRowComponent],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
 })
